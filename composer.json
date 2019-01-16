@@ -1,7 +1,6 @@
 {
   "name": "fryiee/craft-helper",
   "description": "A composer package to make scaffolding craft fields in migrations less painful.",
-  "version": "1.0.0",
   "keywords": [
     "craft",
     "cms",
