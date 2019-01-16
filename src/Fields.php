@@ -48,7 +48,7 @@ class Fields
         $runValidation = false
     ) {
         /** @var FieldRecord $field */
-        $field = self::createField($name, $type, $handle, $settings, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
+        $field = self::createField($name, $type, $handle, $settings, 'matrixBlockType:'.$blockTypeRecord->id, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
 
         if (!$field) {
             return false;
@@ -119,7 +119,7 @@ class Fields
         }
 
         /** @var FieldRecord $field */
-        $field = self::createField($name, $type, $handle, $settings, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
+        $field = self::createField($name, $type, $handle, $settings, 'superTableBlockType:'.$superTableBlockTypeRecord->id, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
 
         if (!$field) {
             return false;
