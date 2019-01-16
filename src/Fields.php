@@ -55,10 +55,13 @@ class Fields
         }
 
         /** @var FieldLayoutRecord $fieldLayout */
-        $fieldLayout = $blockTypeRecord->getFieldLayout();
+        $fieldLayout = $blockTypeRecord->getFieldLayout()->one();
 
         /** @var TabRecord $tab */
         $tab = $fieldLayout->getTabs()->one();
+
+        /** @var Matrix $matrixField */
+        $matrixField = $blockTypeRecord->getField()->one();
 
         return self::addFieldToFieldLayout(
             $field,
@@ -66,7 +69,7 @@ class Fields
             $fieldLayout,
             $required,
             $sortOrder,
-            'matrixcontent_allcontent',
+            'matrixcontent_'.strtolower($matrixField->handle),
             'field_'.$blockTypeRecord->handle.'_'.$handle,
             $columnType
         );
@@ -126,13 +129,13 @@ class Fields
         }
 
         /** @var FieldLayoutRecord $fieldLayout */
-        $fieldLayout = $superTableBlockTypeRecord->getFieldLayout();
+        $fieldLayout = $superTableBlockTypeRecord->getFieldLayout()->one();
 
         /** @var TabRecord $tab */
         $tab = $fieldLayout->getTabs()->one();
 
         if (strpos($superTableField->context, ':') !== false) {
-            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . $superTableField->handle;
+            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . strtolower($superTableField->handle);
         } else {
             $table = 'stc_' . $superTableField->handle;
         }
