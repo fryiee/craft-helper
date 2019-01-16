@@ -178,6 +178,19 @@ class Fields
     }
 
     /**
+     * @param FieldRecord $field
+     * @param $attribute
+     * @param $value
+     * @param bool $encode
+     * @return bool
+     */
+    public static function updateFieldAttribute(FieldRecord $field, $attribute, $value, $encode = false)
+    {
+        $field->$attribute = ($encode ? json_encode($value) : $value);
+        return $field->save(false);
+    }
+
+    /**
      * @param $table
      * @param $column
      * @param $type
