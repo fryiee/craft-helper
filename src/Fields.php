@@ -129,15 +129,15 @@ class Fields
         }
 
         /** @var FieldLayoutRecord $fieldLayout */
-        $fieldLayout = $superTableBlockTypeRecord->getFieldLayout()->one();
+        $fieldLayout = FieldLayoutRecord::findOne(['id' => $superTableBlockTypeRecord->fieldLayoutId]);
 
         /** @var TabRecord $tab */
         $tab = $fieldLayout->getTabs()->one();
 
         if (strpos($superTableField->context, ':') !== false) {
-            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . strtolower($superTableField->handle);
+            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . '_' . strtolower($superTableField->handle);
         } else {
-            $table = 'stc_' . $superTableField->handle;
+            $table = 'stc_' . strtolower($superTableField->handle);
         }
 
         return self::addFieldToFieldLayout(
