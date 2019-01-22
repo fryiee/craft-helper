@@ -194,6 +194,20 @@ class Fields
     }
 
     /**
+     * @param FieldRecord $field
+     * @param $attribute
+     * @param $value
+     * @param bool $encode
+     * @return bool
+     */
+    public static function updateFieldLayoutAttribute(FieldRecord $field, $attribute, $value, $encode = false)
+    {
+        $fieldLayout = FieldLayoutRecord::findOne(['fieldId' => $field->id]);
+        $fieldLayout->$attribute = ($encode ? json_encode($value) : $value);
+        return $fieldLayout->save(false);
+    }
+
+    /**
      * @param $table
      * @param $column
      * @param $type
