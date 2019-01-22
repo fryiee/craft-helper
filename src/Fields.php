@@ -2,6 +2,7 @@
 
 use craft\elements\MatrixBlock;
 use craft\fields\Matrix;
+use craft\records\FieldLayoutField;
 use craft\records\MatrixBlockType as MatrixBlockTypeRecord;
 use craft\records\Field as FieldRecord;
 use craft\records\FieldLayout as FieldLayoutRecord;
@@ -200,11 +201,11 @@ class Fields
      * @param bool $encode
      * @return bool
      */
-    public static function updateFieldLayoutAttribute(FieldRecord $field, $attribute, $value, $encode = false)
+    public static function updateFieldLayoutFieldAttribute(FieldRecord $field, $attribute, $value, $encode = false)
     {
-        $fieldLayout = FieldLayoutRecord::findOne(['fieldId' => $field->id]);
-        $fieldLayout->$attribute = ($encode ? json_encode($value) : $value);
-        return $fieldLayout->save(false);
+        $fieldLayoutField = FieldLayoutFieldRecord::findOne(['fieldId' => $field->id]);
+        $fieldLayoutField->$attribute = ($encode ? json_encode($value) : $value);
+        return $fieldLayoutField->save(false);
     }
 
     /**
