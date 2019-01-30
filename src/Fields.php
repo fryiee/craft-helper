@@ -77,6 +77,42 @@ class Fields
     }
 
     /**
+     * @param MatrixBlockType $matrixBlockType
+     * @param FieldRecord $field
+     * @return bool
+     */
+    public static function removeFieldFromMatrixBlockType(
+        MatrixBlockTypeRecord $matrixBlockType,
+        FieldRecord $field
+    ) {
+
+        /** @var FieldLayoutRecord $fieldLayout */
+        $fieldLayout = $matrixBlockType->getFieldLayout()->one();
+
+        /** @var Matrix $matrixField */
+        $matrixField = $matrixBlockType->getField()->one();
+
+        $deleted = self::deleteFieldFromFieldLayout(
+            $fieldLayout,
+            $field,
+            'matrixcontent_'.strtolower($matrixField->handle),
+            'field_'.$matrixBlockType->handle.'_'.$field->handle
+        );
+
+        if (!$deleted) {
+            return false;
+        }
+
+        try {
+            $field->delete();
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      *
      * This expects a field of the following class: verbb\supertable\fields\SuperTableField
      * This expects a block type record of the following class: verbb\supertable\records\SuperTableBlockTypeRecord
@@ -154,6 +190,54 @@ class Fields
     }
 
     /**
+     * @param $superTableField
+     * @param $superTableBlockTypeRecord
+     * @param FieldRecord $field
+     * @return bool
+     */
+    public static function removeFieldFromSuperTableBlockType(
+        $superTableField,
+        $superTableBlockTypeRecord,
+        FieldRecord $field
+    ) {
+        if (get_class($superTableField) != 'verbb\supertable\fields\SuperTableField') {
+            return false;
+        }
+
+        if (get_class($superTableBlockTypeRecord) != 'verbb\supertable\records\SuperTableBlockTypeRecord') {
+            return false;
+        }
+
+        /** @var FieldLayoutRecord $fieldLayout */
+        $fieldLayout = FieldLayoutRecord::findOne(['id' => $superTableBlockTypeRecord->fieldLayoutId]);
+
+        if (strpos($superTableField->context, ':') !== false) {
+            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . '_' . strtolower($superTableField->handle);
+        } else {
+            $table = 'stc_' . strtolower($superTableField->handle);
+        }
+
+        $deleted = self::deleteFieldFromFieldLayout(
+            $fieldLayout,
+            $field,
+            $table,
+            'field_'.$field->handle
+        );
+
+        if (!$deleted) {
+            return false;
+        }
+
+        try {
+            $field->delete();
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param Matrix $field
      * @param $name
      * @param $handle
@@ -220,6 +304,16 @@ class Fields
     }
 
     /**
+     * @param $table
+     * @param $column
+     */
+    private static function removeColumnFromTable($table, $column)
+    {
+        $migration = new Migration();
+        $migration->dropColumn($table, $column);
+    }
+
+    /**
      * @param FieldRecord $field
      * @param TabRecord $tab
      * @param FieldLayoutRecord $fieldLayout
@@ -253,6 +347,32 @@ class Fields
         \Craft::$app->fields->updateFieldVersion();
 
         return $saved;
+    }
+
+    /**
+     * @param FieldLayoutRecord $fieldLayout
+     * @param FieldRecord $field
+     * @param $table
+     * @param $column
+     * @return bool
+     */
+    private static function deleteFieldFromFieldLayout(FieldLayoutRecord $fieldLayout, FieldRecord $field, $table, $column)
+    {
+        $fieldLayoutField = FieldLayoutFieldRecord::findOne(['fieldId' => $field->id, 'layoutId' => $fieldLayout->id]);
+
+        if (!$fieldLayoutField) {
+            return false;
+        }
+
+        try {
+            $fieldLayoutField->delete();
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        self::removeColumnFromTable($table, $column);
+
+        return true;
     }
 
     /**
