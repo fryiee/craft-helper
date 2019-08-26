@@ -172,7 +172,17 @@ class Fields
         $tab = $fieldLayout->getTabs()->one();
 
         if (strpos($superTableField->context, ':') !== false) {
-            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . '_' . strtolower($superTableField->handle);
+            $idOrUid = explode(':', $superTableField->context)[1];
+
+            if (strpos($idOrUid, '-') !== false) {
+                // it's a uid
+                $blockTypeRecord = MatrixBlockType::findOne(['uid' => $idOrUid]);
+                $id = $blockTypeRecord->id;
+            } else {
+                $id = $idOrUid;
+            }
+
+            $table = 'stc_' . $id . '_' . strtolower($superTableField->handle);
         } else {
             $table = 'stc_' . strtolower($superTableField->handle);
         }
@@ -212,7 +222,17 @@ class Fields
         $fieldLayout = FieldLayoutRecord::findOne(['id' => $superTableBlockTypeRecord->fieldLayoutId]);
 
         if (strpos($superTableField->context, ':') !== false) {
-            $table = 'stc_' . (explode(':', $superTableField->context)[1]) . '_' . strtolower($superTableField->handle);
+            $idOrUid = explode(':', $superTableField->context)[1];
+
+            if (strpos($idOrUid, '-') !== false) {
+                // it's a uid
+                $blockTypeRecord = MatrixBlockType::findOne(['uid' => $idOrUid]);
+                $id = $blockTypeRecord->id;
+            } else {
+                $id = $idOrUid;
+            }
+
+            $table = 'stc_' . $id . '_' . strtolower($superTableField->handle);
         } else {
             $table = 'stc_' . strtolower($superTableField->handle);
         }
