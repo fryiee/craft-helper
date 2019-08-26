@@ -49,7 +49,7 @@ class Fields
         $runValidation = false
     ) {
         /** @var FieldRecord $field */
-        $field = self::createField($name, $type, $handle, $settings, 'matrixBlockType:'.$blockTypeRecord->id, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
+        $field = self::createField($name, $type, $handle, $settings, 'matrixBlockType:'.$blockTypeRecord->uid, $instructions, $fieldGroupId, $translationMethod, $translationKeyFormat, $runValidation);
 
         if (!$field) {
             return false;
