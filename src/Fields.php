@@ -173,9 +173,13 @@ class Fields
         $tab = $fieldLayout->getTabs()->one();
 
         if (strpos($superTableField->context, ':') !== false) {
-            $table = 'stc_' . explode(':', $superTableField->context)[1] . '_' . strtolower($superTableField->handle);
+            $matrixBlockType = MatrixBlockType::findOne(['uid' => explode(':', $superTableField->context)[1]]);
+            $table = 'stc_' . $matrixBlockType->id . '_' . strtolower($superTableField->handle);
             if (Craft::$app->db->getTableSchema($table) === null) {
-                $table = 'stc_' . strtolower($superTableField->handle);
+                $table = 'stc_' . explode(':', $superTableField->context)[1] . '_' . strtolower($superTableField->handle);
+                if (Craft::$app->db->getTableSchema($table) === null) {
+                    $table = 'stc_' . strtolower($superTableField->handle);
+                }
             }
         } else {
             $table = 'stc_' . strtolower($superTableField->handle);
